@@ -1,23 +1,25 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import NotesContext from '../context/notes-context';
+import useForm from '../hooks/useForm';
 
 const NoteForm = () => {
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
   const { dispatch } = useContext(NotesContext);
+  const [content, bindContent, resetContent] = useForm({
+    title: '',
+    body: ''
+  });
+  const { title, body } = content;
 
   const addNote = e => {
     e.preventDefault();
-    // setNotes([...notes, { title, body }]);
     dispatch({ type: 'ADD_NOTE', title, body });
-    setTitle('');
-    setBody('');
+    resetContent();
   };
 
   return (
     <form>
-      <input type="text" value={title} onChange={e => setTitle(e.target.value)} />
-      <textarea value={body} onChange={e => setBody(e.target.value)}></textarea>
+      <input type="text" value={title} name="title" {...bindContent} />
+      <textarea value={body} name="body" {...bindContent}></textarea>
       <button onClick={addNote}>Add Note</button>
     </form>
   );
